@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgtest
+  template:
+    metadata:
+      labels:
+        app: pgtest
+    spec:
+      containers:
+        - name: pgtest
+          image: 098774011087.dkr.ecr.us-east-1.amazonaws.com/pgtest:latest
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-config
+                  key: db.host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-config
+                  key: db.port
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-config
+                  key: db.name
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-config
+                  key: db.user
+            - name: DB_PASSWORD
+              value: ""
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "200Mi"
+            limits:
+              cpu: "500m"
+              memory: "500Mi"
